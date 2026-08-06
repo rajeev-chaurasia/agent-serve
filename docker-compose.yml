@@ -27,7 +27,7 @@ services:
       - agent-serve-net
 
   vllm-big:
-    image: vllm/vllm-openai:v0.6.4
+    image: vllm/vllm-openai:latest
     env_file:
       - ./configs/vllm-big.env
     command: sh -c "vllm serve $MODEL $VLLM_ARGS"
@@ -53,7 +53,7 @@ services:
       - agent-serve-net
 
   vllm-small-0:
-    image: vllm/vllm-openai:v0.6.4
+    image: vllm/vllm-openai:latest
     env_file:
       - ./configs/vllm-small.env
     command: sh -c "vllm serve $MODEL $VLLM_ARGS"
@@ -79,11 +79,11 @@ services:
       - agent-serve-net
 
   vllm-small-1:
-    image: vllm/vllm-openai:v0.6.4
+    image: vllm/vllm-openai:latest
     env_file:
       - ./configs/vllm-small.env
     environment:
-      VLLM_ARGS: --port 8003
+      VLLM_ARGS: --max-model-len 16384 --enable-prefix-caching --gpu-memory-utilization 0.45 --max-num-seqs 128 --port 8003 --host 0.0.0.0
     command: sh -c "vllm serve $MODEL $VLLM_ARGS"
     volumes:
       - ${HF_HOME:-~/.cache/huggingface}:/root/.cache/huggingface
