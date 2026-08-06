@@ -1,0 +1,157 @@
+services:
+  gateway:
+    build:
+      context: ./gateway
+    command: uv run uvicorn agent_serve.gateway.app:create_app --factory --host 0.0.0.0 --port 8000
+    ports:
+      - "${GATEWAY_PORT:-8000}:8000"
+    volumes:
+      - ./configs:/app/configs:ro
+      - ./studies/results:/app/results
+    environment:
+      GATEWAY_CONFIG: /app/configs/gateway.yaml
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    depends_on:
+      vllm-big:
+        condition: service_healthy
+      vllm-small-0:
+        condition: service_healthy
+      vllm-small-1:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - agent-serve-net
+
+  vllm-big:
+    image: vllm/vllm-openai:v0.6.4
+    env_file:
+      - ./configs/vllm-big.env
+    command: sh -c "vllm serve $MODEL $VLLM_ARGS"
+    volumes:
+      - ${HF_HOME:-~/.cache/huggingface}:/root/.cache/huggingface
+    ports:
+      - "${VLLM_BIG_PORT:-8001}:8001"
+    shm_size: 16gb
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["1"]
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 60s
+      timeout: 30s
+      retries: 5
+      start_period: 300s
+    networks:
+      - agent-serve-net
+
+  vllm-small-0:
+    image: vllm/vllm-openai:v0.6.4
+    env_file:
+      - ./configs/vllm-small.env
+    command: sh -c "vllm serve $MODEL $VLLM_ARGS"
+    volumes:
+      - ${HF_HOME:-~/.cache/huggingface}:/root/.cache/huggingface
+    ports:
+      - "${VLLM_SMALL_PORT:-8002}:8002"
+    shm_size: 8gb
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 60s
+      timeout: 30s
+      retries: 5
+      start_period: 180s
+    networks:
+      - agent-serve-net
+
+  vllm-small-1:
+    image: vllm/vllm-openai:v0.6.4
+    env_file:
+      - ./configs/vllm-small.env
+    environment:
+      VLLM_ARGS: --port 8003
+    command: sh -c "vllm serve $MODEL $VLLM_ARGS"
+    volumes:
+      - ${HF_HOME:-~/.cache/huggingface}:/root/.cache/huggingface
+    ports:
+      - "8003:8003"
+    shm_size: 8gb
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 60s
+      timeout: 30s
+      retries: 5
+      start_period: 180s
+    networks:
+      - agent-serve-net
+
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=7d
+    networks:
+      - agent-serve-net
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./configs/grafana:/etc/grafana/provisioning/dashboards:ro
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_DATASOURCES_DEFAULT_TYPE: prometheus
+      GF_DATASOURCES_DEFAULT_URL: http://prometheus:9090
+      GF_DATASOURCES_DEFAULT_ACCESS: proxy
+      GF_DATASOURCES_DEFAULT_IS_DEFAULT: "true"
+    depends_on:
+      - prometheus
+    networks:
+      - agent-serve-net
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.99.0
+    ports:
+      - "${OTEL_COLLECTOR_PORT:-4317}:4317"
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+      - ./configs/otel-collector.yaml:/etc/otel/config.yaml:ro
+    networks:
+      - agent-serve-net
+
+volumes:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  agent-serve-net:
+    driver: bridge

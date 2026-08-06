@@ -1,0 +1,46 @@
+MATH REFERENCE
+==============
+
+STATISTICS
+----------
+Mean (arithmetic):      μ = (Σxᵢ) / n
+Variance (population):  σ² = Σ(xᵢ − μ)² / n
+Variance (sample):      s² = Σ(xᵢ − x̄)² / (n − 1)   [Bessel's correction]
+Standard deviation:     σ = √(σ²)
+Standard error:         SE = σ / √n
+Covariance:             Cov(X,Y) = E[(X−μₓ)(Y−μᵧ)]
+Pearson correlation:    r = Cov(X,Y) / (σₓ · σᵧ),   r ∈ [−1, 1]
+Z-score:                z = (x − μ) / σ
+Bayes' theorem:         P(A|B) = P(B|A)·P(A) / P(B)
+
+PROBABILITY
+-----------
+Addition rule:          P(A∪B) = P(A) + P(B) − P(A∩B)
+Multiplication rule:    P(A∩B) = P(A) · P(B|A)
+Independence:           P(A∩B) = P(A)·P(B)   iff A,B independent
+Expected value:         E[X] = Σ xᵢ·P(xᵢ)   (discrete)
+                        E[X] = ∫ x·f(x)dx    (continuous)
+Variance via moments:   Var(X) = E[X²] − (E[X])²
+Binomial distribution:  P(X=k) = C(n,k)·pᵏ·(1−p)^(n−k)
+Normal distribution:    f(x) = (1/σ√2π)·exp(−(x−μ)²/2σ²)
+
+LINEAR ALGEBRA
+--------------
+Dot product:            a·b = Σ aᵢbᵢ = ‖a‖·‖b‖·cos(θ)
+Matrix multiply (AB)ᵢⱼ: Σₖ Aᵢₖ · Bₖⱼ
+Transpose:              (Aᵀ)ᵢⱼ = Aⱼᵢ
+Inverse (2×2):          [a b; c d]⁻¹ = (1/det)·[d −b; −c a],  det = ad−bc
+Determinant (3×3):      Laplace expansion along first row
+Eigenvalue equation:    Av = λv   (λ scalar, v non-zero vector)
+Frobenius norm:         ‖A‖_F = √(Σᵢⱼ Aᵢⱼ²)
+L2 vector norm:         ‖x‖₂ = √(Σ xᵢ²)
+L1 vector norm:         ‖x‖₁ = Σ|xᵢ|
+
+CALCULUS IDENTITIES
+-------------------
+Chain rule:             d/dx[f(g(x))] = f'(g(x))·g'(x)
+Product rule:           d/dx[f·g] = f'g + fg'
+Power rule:             d/dx[xⁿ] = n·x^(n−1)
+Derivative of eˣ:      d/dx[eˣ] = eˣ
+Derivative of ln(x):   d/dx[ln x] = 1/x
+Gradient descent step: θ ← θ − η·∇L(θ)

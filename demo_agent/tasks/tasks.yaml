@@ -1,0 +1,278 @@
+tasks:
+  # --- Code Explanation (5 tasks) ---
+  - id: task_001
+    prompt: >
+      Read algorithms.py from the corpus and explain what the binary search implementation
+      does, including its time complexity and the precondition it requires on the input array.
+    expected_keywords:
+      - sorted
+      - O(log n)
+      - index
+    tier_hint: auto
+
+  - id: task_002
+    prompt: >
+      Read algorithms.py and explain how the quicksort implementation works.
+      Describe the pivot selection strategy, the three-way partition into left/middle/right,
+      and when the worst-case O(n²) behaviour can occur.
+    expected_keywords:
+      - pivot
+      - partition
+      - O(n log n)
+    tier_hint: auto
+
+  - id: task_003
+    prompt: >
+      Read data_structures.py and explain how the LinkedList class works.
+      Cover the prepend and delete methods, and state the time complexity of each operation.
+    expected_keywords:
+      - O(1)
+      - O(n)
+      - node
+    tier_hint: auto
+
+  - id: task_004
+    prompt: >
+      Read algorithms.py and explain the merge sort implementation.
+      Why is merge sort considered a stable sort and what does that mean in practice?
+      Compare its memory usage to quicksort.
+    expected_keywords:
+      - stable
+      - O(n)
+      - merge
+    tier_hint: auto
+
+  - id: task_005
+    prompt: >
+      Read data_structures.py and explain the Stack class.
+      What does LIFO mean? Walk through what happens when you push three items
+      and then call pop twice.
+    expected_keywords:
+      - LIFO
+      - pop
+      - IndexError
+    tier_hint: auto
+
+  # --- Documentation Lookup (5 tasks) ---
+  - id: task_006
+    prompt: >
+      Search the corpus for information about HTTP/2 and summarise the key improvements
+      it makes over HTTP/1.1, focusing on multiplexing and header compression.
+    expected_keywords:
+      - multiplexing
+      - HPACK
+      - head-of-line
+    tier_hint: auto
+
+  - id: task_007
+    prompt: >
+      Look up the corpus for TLS handshake information. How many round trips does
+      TLS 1.3 require to establish a connection, and what is forward secrecy?
+    expected_keywords:
+      - 1-RTT
+      - forward secrecy
+      - ECDHE
+    tier_hint: auto
+
+  - id: task_008
+    prompt: >
+      Search the corpus for information about the CAP theorem. Explain what it states
+      and give an example of a CP system and an AP system mentioned in the corpus.
+    expected_keywords:
+      - partition
+      - Cassandra
+      - Zookeeper
+    tier_hint: auto
+
+  - id: task_009
+    prompt: >
+      Read api_design.md and explain the three pagination strategies described.
+      Which one is recommended for real-time feeds and why?
+    expected_keywords:
+      - cursor
+      - offset
+      - stable
+    tier_hint: auto
+
+  - id: task_010
+    prompt: >
+      Search the corpus for information about gradient descent variants.
+      What is mini-batch SGD and why is it preferred over full batch gradient descent
+      or pure stochastic gradient descent?
+    expected_keywords:
+      - mini-batch
+      - learning rate
+      - trade-off
+    tier_hint: auto
+
+  # --- Analysis / Calculation (5 tasks) ---
+  - id: task_011
+    prompt: >
+      Using the calculator tool, compute 2^10 + 3^5. Show the result and verify it
+      by explaining what each term equals individually.
+    expected_keywords:
+      - 1024
+      - 243
+      - 1267
+    tier_hint: auto
+
+  - id: task_012
+    prompt: >
+      Use the calculator tool to compute the area of a circle with radius 7.
+      Use the approximation pi = 3.14159265. Round the answer to 4 decimal places
+      by computing 3.14159265 * 7 * 7.
+    expected_keywords:
+      - 153.9380
+      - radius
+      - area
+    tier_hint: auto
+
+  - id: task_013
+    prompt: >
+      Use the calculator tool to compute (1024 * 1024) / 1000000.
+      Then explain what this number means in the context of converting mebibytes to megabytes.
+    expected_keywords:
+      - 1.048576
+      - mebibyte
+      - megabyte
+    tier_hint: auto
+
+  - id: task_014
+    prompt: >
+      Use the calculator tool to compute the compound interest for a principal of 1000,
+      rate of 5% per year for 3 years: 1000 * (1 + 0.05)^3.
+      Show each step and state the final amount.
+    expected_keywords:
+      - 1157.625
+      - compound
+      - interest
+    tier_hint: auto
+
+  - id: task_015
+    prompt: >
+      Use the calculator to compute 128 * 1024 * 1024, which is 128 MiB in bytes.
+      Also compute 128 * 1024 * 1024 / 1000 to get the equivalent in kilobytes.
+    expected_keywords:
+      - 134217728
+      - 131072
+      - bytes
+    tier_hint: auto
+
+  # --- Multi-step Tasks (5 tasks) ---
+  - id: task_016
+    prompt: >
+      Search the corpus for the keyword 'gradient', read the ml_concepts.md file,
+      then use the calculator to compute a learning rate schedule: start at 0.01
+      and after 10 steps with decay factor 0.9: 0.01 * 0.9^10.
+    expected_keywords:
+      - gradient
+      - 0.01
+      - decay
+    tier_hint: auto
+
+  - id: task_017
+    prompt: >
+      Search the corpus for 'asyncio', then read concurrency_notes.py.
+      Summarise the three concurrency patterns shown in that file and explain
+      when you would use each one.
+    expected_keywords:
+      - asyncio
+      - ThreadPoolExecutor
+      - ProcessPoolExecutor
+    tier_hint: auto
+
+  - id: task_018
+    prompt: >
+      Search the corpus for 'cache', then read system_design.md.
+      List the four caching strategies described and compute using the calculator
+      how many cache entries fit in 512 MB if each entry is 4 KB: 512*1024 / 4.
+    expected_keywords:
+      - cache-aside
+      - write-through
+      - 131072
+    tier_hint: auto
+
+  - id: task_019
+    prompt: >
+      Read python_tips.md, then run Python code to demonstrate that a set lookup
+      is faster than a list lookup by timing both. Use a list and set of 100000
+      elements and look up the last element.
+    expected_keywords:
+      - set
+      - list
+      - faster
+    tier_hint: auto
+
+  - id: task_020
+    prompt: >
+      Read sorting_complexity.txt to find which sorting algorithms are stable.
+      Then use the calculator to estimate how many comparisons merge sort makes
+      for 1 million elements: 1000000 * 20 (since log2(1000000) ≈ 20).
+    expected_keywords:
+      - stable
+      - merge sort
+      - 20000000
+    tier_hint: auto
+
+  # --- Complex Reasoning (5 tasks, tier_hint: big) ---
+  - id: task_021
+    prompt: >
+      Read sorting_complexity.txt and compare the time complexity of all sorting
+      algorithms listed. Given 1 million random integers with no memory constraints,
+      recommend the single best algorithm and justify your choice with specific
+      complexity data from the file.
+    expected_keywords:
+      - O(n log n)
+      - Tim Sort
+      - random
+    tier_hint: big
+
+  - id: task_022
+    prompt: >
+      Read both ml_concepts.md and math_reference.txt. Explain how gradient descent
+      uses the gradient (from math_reference.txt) to minimize a loss function
+      (from ml_concepts.md). Then compute the Adam update: if gradient g=0.1,
+      learning rate=0.001, and after bias correction m̂=0.1, v̂=0.01, compute
+      0.001 * 0.1 / (0.01**0.5 + 0.00000001).
+    expected_keywords:
+      - Adam
+      - gradient
+      - 0.001
+    tier_hint: big
+
+  - id: task_023
+    prompt: >
+      Read system_design.md and networking_notes.txt. Design a highly available
+      web service architecture that uses load balancing, caching, and message queues.
+      Describe how each component addresses a specific failure mode, referencing
+      specific content from both files.
+    expected_keywords:
+      - load balancer
+      - cache
+      - message queue
+    tier_hint: big
+
+  - id: task_024
+    prompt: >
+      Read api_design.md and python_tips.md. Design a Python API client that follows
+      the REST best practices from api_design.md, using Python performance techniques
+      from python_tips.md. Show the key design decisions and which specific practices
+      from each file influenced them.
+    expected_keywords:
+      - pagination
+      - generator
+      - error
+    tier_hint: big
+
+  - id: task_025
+    prompt: >
+      Read concurrency_notes.py and ml_concepts.md. Explain how you would accelerate
+      training a machine learning model using the concurrency patterns in
+      concurrency_notes.py. Which pattern suits data loading vs. model forward pass?
+      Use the calculator to estimate speedup: if 4 workers each take 10s, total
+      wall time is 10 / 4 parallel, but sequential would be 4 * 10 = 40.
+    expected_keywords:
+      - ProcessPoolExecutor
+      - parallel
+      - speedup
+    tier_hint: big
