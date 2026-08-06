@@ -1,0 +1,44 @@
+# Gateway runtime configuration — override values here, NOT in code
+backends:
+  - id: big-0
+    tier: big
+    base_url: "http://vllm-big:8001"
+    gpu: 1
+    max_inflight: 32
+  - id: small-0
+    tier: small
+    base_url: "http://vllm-small-0:8002"
+    gpu: 0
+    max_inflight: 64
+  - id: small-1
+    tier: small
+    base_url: "http://vllm-small-1:8003"
+    gpu: 0
+    max_inflight: 64
+
+admission:
+  default_token_budget: 100000      # per agent_id per window
+  budget_window_seconds: 3600
+  max_queue_size: 256
+  queue_timeout_seconds: 30
+
+routing:
+  prompt_length_threshold: 2000     # chars; above this → big tier
+  classifier_cache_ttl_seconds: 300
+  tool_followup_stays_same_tier: true
+
+affinity:
+  enabled: true
+  sticky_ttl_seconds: 1800          # session→backend binding TTL
+  rebalance_on_backend_recovery: false
+
+health:
+  probe_interval_seconds: 10
+  failures_to_mark_down: 3
+  successes_to_mark_up: 2
+  probe_timeout_seconds: 5
+
+telemetry:
+  otlp_endpoint: "http://otel-collector:4317"
+  prometheus_path: "/metrics"
+  log_level: "info"

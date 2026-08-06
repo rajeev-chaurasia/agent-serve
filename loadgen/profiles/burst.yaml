@@ -1,0 +1,13 @@
+name: burst
+description: Square-wave burst traffic — alternates between high and low concurrency
+mode: closed_loop
+concurrency: 30
+total_sessions: 300
+think_time_seconds: 0.2
+tier_hint: auto
+turn_spec:
+  min_turns: 1
+  max_turns: 3
+  system_prompt_chars: 1500
+  user_prompt_chars: 150
+  tool_call_probability: 0.2

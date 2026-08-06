@@ -1,0 +1,46 @@
+SORTING ALGORITHM COMPLEXITY REFERENCE
+======================================
+
+Algorithm        | Best      | Average   | Worst     | Space    | Stable?
+-----------------|-----------|-----------|-----------|----------|--------
+Bubble Sort      | O(n)      | O(n²)     | O(n²)     | O(1)     | Yes
+Selection Sort   | O(n²)     | O(n²)     | O(n²)     | O(1)     | No
+Insertion Sort   | O(n)      | O(n²)     | O(n²)     | O(1)     | Yes
+Merge Sort       | O(n log n)| O(n log n)| O(n log n)| O(n)     | Yes
+Quicksort        | O(n log n)| O(n log n)| O(n²)     | O(log n) | No
+Heap Sort        | O(n log n)| O(n log n)| O(n log n)| O(1)     | No
+Counting Sort    | O(n+k)    | O(n+k)    | O(n+k)    | O(k)     | Yes
+Radix Sort       | O(nk)     | O(nk)     | O(nk)     | O(n+k)   | Yes
+Bucket Sort      | O(n+k)    | O(n+k)    | O(n²)     | O(n+k)   | Yes
+Tim Sort         | O(n)      | O(n log n)| O(n log n)| O(n)     | Yes
+Shell Sort       | O(n log n)| O(n log n)| O(n²)     | O(1)     | No
+Tree Sort        | O(n log n)| O(n log n)| O(n²)     | O(n)     | Yes
+
+Notes:
+  n = number of elements
+  k = range of values (for counting/radix/bucket) or number of runs (Tim Sort)
+
+PRACTICAL GUIDANCE
+------------------
+Small arrays (n < 20):
+  Use Insertion Sort — minimal overhead, excellent cache locality, in-place.
+
+General-purpose, unknown distribution:
+  Use Tim Sort (Python's built-in sort) — adaptive, stable, O(n log n) worst case.
+  Tim Sort detects already-sorted runs and merges them efficiently.
+
+Large arrays, memory-constrained:
+  Use Heap Sort — O(n log n) worst case, O(1) extra space, not stable.
+
+Parallel/distributed:
+  Use Merge Sort — naturally parallelisable; independent sub-problems.
+
+Integer keys, bounded range:
+  Use Counting Sort or Radix Sort for O(n) average performance.
+
+Worst-case guarantee needed (real-time systems):
+  Avoid Quicksort (O(n²) worst case). Use Merge Sort or Heap Sort.
+
+Python's built-in sort:
+  list.sort() and sorted() use Tim Sort — stable, O(n log n), written in C.
+  For 1M random integers: Python's sort takes ~0.5s; custom Python sorts are ~10x slower.

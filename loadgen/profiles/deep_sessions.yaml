@@ -1,0 +1,13 @@
+name: deep_sessions
+description: Long multi-turn sessions — showcase for affinity scheduler and prefix-cache benefit
+mode: closed_loop
+concurrency: 5
+total_sessions: 50
+think_time_seconds: 2.0
+tier_hint: small
+turn_spec:
+  min_turns: 15
+  max_turns: 25
+  system_prompt_chars: 3000
+  user_prompt_chars: 300
+  tool_call_probability: 0.5

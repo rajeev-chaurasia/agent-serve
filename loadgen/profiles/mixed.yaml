@@ -1,0 +1,13 @@
+name: mixed
+description: Mixed traffic for routing economics study — auto tier so classifier runs
+mode: closed_loop
+concurrency: 15
+total_sessions: 250
+think_time_seconds: 0.5
+tier_hint: auto
+turn_spec:
+  min_turns: 2
+  max_turns: 8
+  system_prompt_chars: 2000
+  user_prompt_chars: 250
+  tool_call_probability: 0.35
