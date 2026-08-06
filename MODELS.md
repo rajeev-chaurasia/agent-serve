@@ -6,7 +6,7 @@ This file is the authoritative record of which model checkpoints are deployed, t
 
 | Tier  | Model                                     | HF Repo                                          | Quant | GPU | VRAM Budget          | Key vLLM Flags |
 |-------|-------------------------------------------|--------------------------------------------------|-------|-----|----------------------|----------------|
-| big   | Qwen2.5-72B-Instruct-FP8                  | neuralmagic/Qwen2.5-72B-Instruct-FP8            | FP8   | 1   | ~72 GB weights+KV    | `--quantization fp8 --max-model-len 8192 --enable-prefix-caching --gpu-memory-utilization 0.90 --max-num-seqs 32 --enable-chunked-prefill` |
+| big   | Qwen2.5-72B-Instruct-FP8-dynamic          | RedHatAI/Qwen2.5-72B-Instruct-FP8-dynamic        | FP8   | 1   | ~72 GB weights+KV    | `--max-model-len 8192 --enable-prefix-caching --gpu-memory-utilization 0.90 --max-num-seqs 32 --enable-chunked-prefill` |
 | small | Qwen2.5-7B-Instruct (×2 on GPU 0)        | Qwen/Qwen2.5-7B-Instruct                        | BF16  | 0   | ~14 GB weights+KV    | `--max-model-len 16384 --enable-prefix-caching --gpu-memory-utilization 0.45 --max-num-seqs 128` |
 
 Using the same model family across both tiers (Qwen2.5) keeps tokenization identical, which matters for prompt-length routing thresholds and prefix-cache comparisons.
@@ -15,8 +15,7 @@ Using the same model family across both tiers (Qwen2.5) keeps tokenization ident
 
 **big (GPU 1):**
 ```
-vllm serve neuralmagic/Qwen2.5-72B-Instruct-FP8 \
-  --quantization fp8 \
+vllm serve RedHatAI/Qwen2.5-72B-Instruct-FP8-dynamic \
   --max-model-len 8192 \
   --enable-prefix-caching \
   --gpu-memory-utilization 0.90 \
@@ -46,14 +45,14 @@ Record the exact commit hash for each model after the first successful download 
 
 | Model                                      | HF Commit Hash              | Recorded Date | Recorded By |
 |--------------------------------------------|-----------------------------|---------------|-------------|
-| neuralmagic/Qwen2.5-72B-Instruct-FP8      | TBD — record after download | —             | —           |
+| RedHatAI/Qwen2.5-72B-Instruct-FP8-dynamic      | TBD — record after download | —             | —           |
 | Qwen/Qwen2.5-7B-Instruct                  | TBD — record after download | —             | —           |
 
 To record the commit hash after download:
 ```bash
 python -c "
 from huggingface_hub import model_info
-for repo in ['neuralmagic/Qwen2.5-72B-Instruct-FP8', 'Qwen/Qwen2.5-7B-Instruct']:
+for repo in ['RedHatAI/Qwen2.5-72B-Instruct-FP8-dynamic', 'Qwen/Qwen2.5-7B-Instruct']:
     print(repo, model_info(repo).sha)
 "
 ```
@@ -78,7 +77,7 @@ Both RTX PRO 6000 Blackwell GPUs (SM120) have 96 GB GDDR7 VRAM each.
 
 ## Fallback Plan
 
-If `neuralmagic/Qwen2.5-72B-Instruct-FP8` fails to load on SM120:
+If `RedHatAI/Qwen2.5-72B-Instruct-FP8-dynamic` fails to load on SM120:
 
 1. **First fallback**: `Qwen/Qwen2.5-32B-Instruct` with `--quantization fp8`
    - ~16 GB weights (FP8), much more KV headroom
