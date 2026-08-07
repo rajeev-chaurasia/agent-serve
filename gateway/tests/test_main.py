@@ -6,17 +6,12 @@ behave correctly without requiring a real vLLM backend or any external services.
 Protocol dependencies are replaced with minimal inline fakes.
 """
 
-import json
-import pytest
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
-from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 
-from agent_serve.core.enums import Tier, BackendStatus
-from agent_serve.core.models import BackendInfo, SessionContext, RoutingDecision, AgentServeMeta
-from agent_serve.core.exceptions import BudgetExceededException
-
+from agent_serve.core.enums import BackendStatus, Tier
+from agent_serve.core.models import AgentServeMeta, BackendInfo, RoutingDecision
 
 MOCK_COMPLETION = {
     "id": "chatcmpl-test",
@@ -153,14 +148,19 @@ class _FakeRegistry:
         self._backends = {b.id: b for b in backends}
 
     def get_healthy_backends(self, tier: Tier) -> list[BackendInfo]:
-        return [b for b in self._backends.values() if b.tier == tier and b.status == BackendStatus.HEALTHY]
+        return [
+            b for b in self._backends.values()
+            if b.tier == tier and b.status == BackendStatus.HEALTHY
+        ]
 
     def get_backend(self, backend_id: str) -> BackendInfo | None:
         return self._backends.get(backend_id)
 
     def mark_status(self, backend_id: str, status: BackendStatus) -> None:
         if backend_id in self._backends:
-            self._backends[backend_id] = self._backends[backend_id].model_copy(update={"status": status})
+            self._backends[backend_id] = self._backends[backend_id].model_copy(
+                update={"status": status}
+            )
 
     def all_backends(self) -> list[BackendInfo]:
         return list(self._backends.values())
@@ -168,8 +168,8 @@ class _FakeRegistry:
 
 def test_fake_registry_healthy_filter():
     backends = [
-        BackendInfo(id="s0", tier=Tier.SMALL, base_url="http://localhost:8002", gpu=0, max_inflight=64),
-        BackendInfo(id="b0", tier=Tier.BIG, base_url="http://localhost:8001", gpu=1, max_inflight=32),
+        BackendInfo(id="s0", tier=Tier.SMALL, base_url="http://localhost:8002", gpu=0, max_inflight=64),  # noqa: E501
+        BackendInfo(id="b0", tier=Tier.BIG, base_url="http://localhost:8001", gpu=1, max_inflight=32),  # noqa: E501
     ]
     reg = _FakeRegistry(backends)
     assert len(reg.get_healthy_backends(Tier.SMALL)) == 1

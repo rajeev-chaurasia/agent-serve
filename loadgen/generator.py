@@ -103,7 +103,8 @@ class SessionRunner:
                 tier = meta.get("tier", "unknown")
                 backend_id = meta.get("backend_id", "unknown")
                 affinity_hit = meta.get("affinity_hit", False)
-                ttft_ms = meta.get("queue_wait_ms", ttft_ms)
+                # queue_wait_ms is the admission wait, not TTFT. Keep ttft_ms == e2e_ms
+                # for non-streaming responses (there is no true TTFT without streaming).
                 usage = data.get("usage") or {}
                 input_tokens = usage.get("prompt_tokens", 0)
                 output_tokens = usage.get("completion_tokens", 0)

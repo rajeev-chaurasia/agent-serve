@@ -1,8 +1,9 @@
 import pytest
+
 from agent_serve.affinity._reference import ReferenceAffinityScheduler, _hrw_score
-from agent_serve.core.enums import Tier, BackendStatus
-from agent_serve.core.models import BackendInfo, SessionContext
 from agent_serve.backends.registry import BackendRegistry
+from agent_serve.core.enums import BackendStatus, Tier
+from agent_serve.core.models import BackendInfo, SessionContext
 
 
 def _make_backends(n: int, tier: Tier = Tier.SMALL) -> list[BackendInfo]:

@@ -85,12 +85,13 @@ class AffinityScheduler:
 
     def select_backend(
         self, session: SessionContext, tier: Tier, candidates: list[BackendInfo]
-    ) -> BackendInfo:
+    ) -> tuple[BackendInfo, bool]:
         """Route a session turn to the best backend, reusing any live sticky binding.
 
-        Returns the same backend as previous turns when the binding is valid, so the
-        vLLM instance's prefix cache hit rate stays high. Falls through to HRW when
-        the binding is missing, expired, or the pinned backend is no longer in candidates.
+        Returns (backend, affinity_hit) where affinity_hit is True only when the session
+        was already pinned to a live backend (turns 2+). Turn 1 is always a miss.
+        Falls through to HRW when the binding is missing, expired, or the pinned backend
+        is no longer in candidates.
         """
         if not candidates:
             raise BackendUnavailableException(tier=tier)
@@ -108,14 +109,14 @@ class AffinityScheduler:
                 AFFINITY_HITS_TOTAL.labels(tier=tier.value).inc()
                 # Return the caller's BackendInfo object, not a reconstructed one — the
                 # caller's list is the authoritative view of the backend's current state.
-                return next(b for b in candidates if b.id == entry.backend_id)
+                return next(b for b in candidates if b.id == entry.backend_id), True
 
             # Either no entry, TTL expired, or the pinned backend left the candidate set.
             # HRW over the current candidates gives us a deterministic, stable assignment.
             chosen = _select_by_hrw(session.session_id, candidates)
             self._sticky[session.session_id] = _StickyEntry(chosen.id, tier, self._ttl)
             AFFINITY_MISSES_TOTAL.labels(tier=tier.value).inc()
-            return chosen
+            return chosen, False
 
     def invalidate(self, session_id: str) -> None:
         """Drop the sticky binding for a session.

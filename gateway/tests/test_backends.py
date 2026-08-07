@@ -1,6 +1,5 @@
-import pytest
 from agent_serve.backends.registry import BackendRegistry
-from agent_serve.core.enums import Tier, BackendStatus
+from agent_serve.core.enums import BackendStatus, Tier
 
 
 def test_get_healthy_backends_filters_by_tier(gateway_config):

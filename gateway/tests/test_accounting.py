@@ -1,5 +1,5 @@
-import time
 import pytest
+
 from agent_serve.accounting.accountant import TokenAccountant
 from agent_serve.config.models import AdmissionConfig
 

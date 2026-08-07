@@ -68,10 +68,10 @@ async def chat_completions(
 
         # Stage 2: Affinity — let the scheduler pick the sticky backend
         candidates = registry.get_healthy_backends(decision.tier)
-        backend = affinity.select_backend(session, decision.tier, candidates)
+        backend, affinity_hit = affinity.select_backend(session, decision.tier, candidates)
         decision = decision.model_copy(update={
             "backend_id": backend.id,
-            "affinity_hit": True,
+            "affinity_hit": affinity_hit,
         })
 
         # Stage 3: Admission — budget and concurrency gate
