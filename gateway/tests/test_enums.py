@@ -1,5 +1,10 @@
 from agent_serve.core.enums import (
-    Tier, BackendStatus, RoutingReason, AdmissionOutcome, RequestOutcome, HealthProbeResult,
+    AdmissionOutcome,
+    BackendStatus,
+    HealthProbeResult,
+    RequestOutcome,
+    RoutingReason,
+    Tier,
 )
 
 
@@ -30,7 +35,7 @@ def test_request_outcome_completeness():
 
 def test_str_enum_comparison():
     assert Tier.SMALL == "small"
-    assert "big" == Tier.BIG
+    assert Tier.BIG == "big"
 
 
 def test_admission_outcome_values():

@@ -6,7 +6,7 @@ from .models import TokenUsage
 
 class ChatMessage(BaseModel):
     role: str
-    content: str
+    content: str | None = None  # None when role=assistant with tool_calls
     tool_calls: list | None = None
     tool_call_id: str | None = None
 

@@ -1,11 +1,15 @@
+
 import pytest
-from pathlib import Path
-from agent_serve.core.enums import Tier, BackendStatus
-from agent_serve.core.models import BackendInfo, SessionContext
+
 from agent_serve.config.models import (
-    GatewayConfig, BackendConfig, AdmissionConfig,
-    RoutingConfig, AffinityConfig, HealthConfig, TelemetryConfig,
+    AdmissionConfig,
+    AffinityConfig,
+    BackendConfig,
+    GatewayConfig,
+    RoutingConfig,
 )
+from agent_serve.core.enums import Tier
+from agent_serve.core.models import BackendInfo, SessionContext
 
 
 @pytest.fixture

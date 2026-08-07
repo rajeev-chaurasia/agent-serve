@@ -1,10 +1,8 @@
-import pytest
-from agent_serve.routing.rules import RuleBasedRouter
-from agent_serve.routing.router import TierRouter
-from agent_serve.core.enums import Tier, RoutingReason
-from agent_serve.core.models import SessionContext, BackendInfo
-from agent_serve.config.models import RoutingConfig
 from agent_serve.backends.registry import BackendRegistry
+from agent_serve.config.models import RoutingConfig
+from agent_serve.core.enums import RoutingReason, Tier
+from agent_serve.core.models import SessionContext
+from agent_serve.routing.rules import RuleBasedRouter
 
 
 def _make_registry(gateway_config):

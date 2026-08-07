@@ -11,7 +11,6 @@ well-tested — reinventing it here would add noise without adding confidence.
 """
 
 import threading
-import time
 
 import pytest
 
@@ -30,7 +29,6 @@ from agent_serve.telemetry.metrics import (
     AFFINITY_HITS_TOTAL,
     AFFINITY_MISSES_TOTAL,
 )
-
 
 # ---------------------------------------------------------------------------
 # Shared helpers
@@ -103,7 +101,7 @@ def test_new_session_gets_backend_assigned():
     scheduler, _ = _scheduler_for(backends)
     session = SessionContext(session_id="fresh-session-001", agent_id="a")
 
-    result = scheduler.select_backend(session, Tier.SMALL, backends)
+    result, _ = scheduler.select_backend(session, Tier.SMALL, backends)
 
     assert result.id in {b.id for b in backends}
 
@@ -116,8 +114,8 @@ def test_same_session_returns_same_backend_on_repeat_calls():
     scheduler, _ = _scheduler_for(backends)
     session = SessionContext(session_id="sticky-001", agent_id="a")
 
-    first = scheduler.select_backend(session, Tier.SMALL, backends)
-    second = scheduler.select_backend(session, Tier.SMALL, backends)
+    first, _ = scheduler.select_backend(session, Tier.SMALL, backends)
+    second, _ = scheduler.select_backend(session, Tier.SMALL, backends)
 
     assert first.id == second.id
 
@@ -133,7 +131,7 @@ def test_different_sessions_distribute_across_backends():
     assigned = set()
     for i in range(40):
         session = SessionContext(session_id=f"spread-{i:03d}", agent_id="a")
-        result = scheduler.select_backend(session, Tier.SMALL, backends)
+        result, _ = scheduler.select_backend(session, Tier.SMALL, backends)
         assigned.add(result.id)
 
     assert len(assigned) == 2, (
@@ -225,7 +223,7 @@ def test_on_backend_down_migrates_pinned_sessions():
         SessionContext(session_id=f"migrate-{i}", agent_id="a") for i in range(5)
     ]
     for s in sessions:
-        result = scheduler.select_backend(s, Tier.SMALL, [b0])
+        result, _ = scheduler.select_backend(s, Tier.SMALL, [b0])
         assert result.id == b0.id
 
     # Simulate the probe loop detecting b0 as down and updating the registry.
@@ -234,7 +232,7 @@ def test_on_backend_down_migrates_pinned_sessions():
 
     # All sessions should now route to b1 without requiring another miss cycle.
     for s in sessions:
-        result = scheduler.select_backend(s, Tier.SMALL, backends)
+        result, _ = scheduler.select_backend(s, Tier.SMALL, backends)
         assert result.id == b1.id, (
             f"Session {s.session_id} still routes to {result.id} after b0 went down"
         )
@@ -288,8 +286,24 @@ def test_on_backend_down_with_no_survivors_evicts_sessions():
         gpu=0,
         max_inflight=64,
     )
-    result = scheduler.select_backend(session, Tier.SMALL, [new_backend])
+    result, _ = scheduler.select_backend(session, Tier.SMALL, [new_backend])
     assert result.id == new_backend.id
+
+
+def test_select_backend_returns_hit_false_on_first_turn_true_on_subsequent():
+    # The hit flag is the source of truth for affinity_hit in API responses.
+    # Turn 1 must be False (no prior binding); turn 2+ must be True.
+    backends = _make_backends(2)
+    scheduler, _ = _scheduler_for(backends)
+    session = SessionContext(session_id="hit-flag-001", agent_id="a")
+
+    _, hit1 = scheduler.select_backend(session, Tier.SMALL, backends)
+    _, hit2 = scheduler.select_backend(session, Tier.SMALL, backends)
+    _, hit3 = scheduler.select_backend(session, Tier.SMALL, backends)
+
+    assert hit1 is False, "Turn 1 should be a miss — no prior binding exists"
+    assert hit2 is True, "Turn 2 should be a hit — binding was established on turn 1"
+    assert hit3 is True, "Turn 3 should remain a hit"
 
 
 def test_ttl_expiry_produces_miss_not_hit():
@@ -341,7 +355,7 @@ def test_thread_safety_concurrent_select_backend():
             session = SessionContext(
                 session_id=f"concurrent-{thread_idx:03d}", agent_id="a"
             )
-            backend = scheduler.select_backend(session, Tier.SMALL, backends)
+            backend, _ = scheduler.select_backend(session, Tier.SMALL, backends)
             with result_lock:
                 results.append(backend)
         except Exception as exc:  # noqa: BLE001

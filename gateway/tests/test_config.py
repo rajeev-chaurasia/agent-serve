@@ -1,6 +1,7 @@
-import pytest
 import tempfile
-from pathlib import Path
+
+import pytest
+
 from agent_serve.config.loader import load_config
 from agent_serve.config.models import GatewayConfig
 from agent_serve.core.enums import Tier
@@ -57,7 +58,7 @@ def test_load_valid_config():
 
 
 def test_load_missing_file():
-    with pytest.raises(Exception):
+    with pytest.raises((FileNotFoundError, ValueError)):
         load_config("/nonexistent/path/config.yaml")
 
 
@@ -88,7 +89,7 @@ def test_load_multi_backend_config():
 def test_load_invalid_yaml_raises():
     bad_yaml = "backends: [unclosed"
     path = _write_temp_yaml(bad_yaml)
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         load_config(path)
 
 
@@ -102,7 +103,7 @@ def test_load_missing_required_field_raises():
         "    max_inflight: 1\n"
     )
     path = _write_temp_yaml(bad)
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         load_config(path)
 
 
