@@ -5,21 +5,26 @@ import time
 
 import httpx
 
+from ..backends.protocols import BackendRegistryProtocol
 from ..core.enums import Tier
 from ..core.models import SessionContext
-from ..backends.protocols import BackendRegistryProtocol
 
 logger = logging.getLogger(__name__)
 
-_CLASSIFIER_PROMPT = """You are a routing classifier. Given a chat request, decide which model tier to use.
-Reply with exactly one JSON object: {"tier": "small"} or {"tier": "big"}.
-Use "big" only if the task clearly requires complex multi-step reasoning, long-context synthesis, or advanced coding.
-Use "small" for everything else."""
+_CLASSIFIER_PROMPT = (
+    'You are a routing classifier. Given a chat request, decide which model tier to use. '
+    'Reply with exactly one JSON object: {"tier": "small"} or {"tier": "big"}. '
+    'Use "big" only if the task clearly requires complex multi-step reasoning, '
+    'long-context synthesis, or advanced coding. Use "small" for everything else.'
+)
 
 
 def _fingerprint(messages: list[dict]) -> str:
-    key = json.dumps([{"role": m.get("role"), "content": (m.get("content") or "")[:200]} for m in messages[-3:]])
-    return hashlib.sha1(key.encode()).hexdigest()[:16]
+    snippets = [
+        {"role": m.get("role"), "content": (m.get("content") or "")[:200]}
+        for m in messages[-3:]
+    ]
+    return hashlib.sha1(json.dumps(snippets).encode()).hexdigest()[:16]
 
 
 class ClassifierRouter:
@@ -66,7 +71,7 @@ class ClassifierRouter:
 
         backend = backends[0]
         payload = {
-            "model": "classifier",
+            "model": backend.model or "classifier",
             "messages": [
                 {"role": "system", "content": _CLASSIFIER_PROMPT},
                 {"role": "user", "content": json.dumps(messages[-3:])},

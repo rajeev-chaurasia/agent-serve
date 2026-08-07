@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import os
 from contextlib import asynccontextmanager
@@ -6,19 +5,19 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
-from ..config.loader import load_config
-from ..config.models import GatewayConfig
-from ..backends.registry import BackendRegistry
-from ..backends.health import HealthChecker
-from ..backends.proxy import BackendProxy
 from ..accounting.accountant import TokenAccountant
 from ..accounting.snapshot import SnapshotManager
 from ..admission.controller import AdmissionController
-from ..routing.router import TierRouter
 from ..affinity.scheduler import AffinityScheduler
+from ..backends.health import HealthChecker
+from ..backends.proxy import BackendProxy
+from ..backends.registry import BackendRegistry
+from ..config.loader import load_config
+from ..config.models import GatewayConfig
+from ..routing.router import TierRouter
 from ..telemetry.logging import configure_logging
-from ..telemetry.tracing import setup_tracing, instrument_app
 from ..telemetry.metrics import BACKEND_UP
+from ..telemetry.tracing import instrument_app, setup_tracing
 
 logger = logging.getLogger(__name__)
 

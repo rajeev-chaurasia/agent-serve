@@ -39,6 +39,10 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = [
+    "B008",   # Depends() in function defaults is the canonical FastAPI DI pattern
+    "UP042",  # str+Enum is required for Pydantic v2 serialization compatibility
+]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

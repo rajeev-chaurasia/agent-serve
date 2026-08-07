@@ -1,11 +1,11 @@
 import logging
 
-from ..core.enums import Tier, RoutingReason
-from ..core.models import SessionContext, RoutingDecision
-from ..config.models import RoutingConfig
 from ..backends.protocols import BackendRegistryProtocol
-from .rules import RuleBasedRouter
+from ..config.models import RoutingConfig
+from ..core.enums import RoutingReason, Tier
+from ..core.models import RoutingDecision, SessionContext
 from .classifier import ClassifierRouter
+from .rules import RuleBasedRouter
 
 logger = logging.getLogger(__name__)
 
@@ -48,15 +48,11 @@ class TierRouter:
             fallback = Tier.BIG if tier == Tier.SMALL else Tier.SMALL
             backends = self._registry.get_healthy_backends(fallback)
             if backends:
-                logger.warning("tier %s has no healthy backends, falling back to %s", tier, fallback)
+                logger.warning("tier %s has no healthy backends, falling back to %s", tier, fallback)  # noqa: E501
                 tier = fallback
                 reason = RoutingReason.FALLBACK
 
-        if not backends:
-            # Affinity scheduler will also fail — raise via BackendUnavailableException upstream
-            backend_id = "__unavailable__"
-        else:
-            backend_id = backends[0].id  # affinity scheduler will override this
+        backend_id = "__unavailable__" if not backends else backends[0].id
 
         decision = RoutingDecision(
             tier=tier,

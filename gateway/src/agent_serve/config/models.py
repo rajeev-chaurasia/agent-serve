@@ -9,6 +9,7 @@ class BackendConfig(BaseModel):
     base_url: str
     gpu: int
     max_inflight: int
+    model: str = ""
 
 
 class AdmissionConfig(BaseModel):

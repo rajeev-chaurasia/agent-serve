@@ -5,16 +5,19 @@ backends:
     base_url: "http://vllm-big:8001"
     gpu: 1
     max_inflight: 32
+    model: "RedHatAI/Qwen2.5-72B-Instruct-FP8-dynamic"
   - id: small-0
     tier: small
     base_url: "http://vllm-small-0:8002"
     gpu: 0
     max_inflight: 64
+    model: "Qwen/Qwen2.5-7B-Instruct"
   - id: small-1
     tier: small
     base_url: "http://vllm-small-1:8003"
     gpu: 0
     max_inflight: 64
+    model: "Qwen/Qwen2.5-7B-Instruct"
 
 admission:
   default_token_budget: 100000      # per agent_id per window

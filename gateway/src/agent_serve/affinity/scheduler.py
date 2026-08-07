@@ -166,7 +166,7 @@ class AffinityScheduler:
                     # binding to a dead backend; the session will re-hash when it retries.
                     del self._sticky[sid]
                     logger.warning(
-                        "affinity broken: session %s evicted (no survivors for tier=%s after %s went down)",
+                        "affinity broken: session %s evicted (no survivors tier=%s, %s down)",
                         sid,
                         tier.value,
                         backend_id,

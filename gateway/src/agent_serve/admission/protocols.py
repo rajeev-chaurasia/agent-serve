@@ -1,7 +1,7 @@
 from typing import Protocol, runtime_checkable
-from contextlib import asynccontextmanager
-from ..core.models import SessionContext, BackendInfo
+
 from ..core.enums import Tier
+from ..core.models import SessionContext
 
 
 @runtime_checkable

@@ -3,8 +3,8 @@ import logging
 import httpx
 from fastapi import APIRouter, Depends
 
-from ..dependencies import get_accountant, get_registry
 from ...core.enums import BackendStatus
+from ..dependencies import get_accountant, get_registry
 
 logger = logging.getLogger(__name__)
 router = APIRouter()

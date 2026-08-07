@@ -45,3 +45,4 @@ Thumbs.db
 studies/results/*/
 !studies/results/.gitkeep
 studies/results/synthetic/
+studies/results/accounting_snapshot.json
