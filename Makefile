@@ -1,7 +1,7 @@
 GATEWAY_URL  ?= http://localhost:8000
 COMPOSE_FILE ?= docker-compose.yml
 
-.PHONY: help up down logs restart status test lint check install lock study plots demo smoke clean
+.PHONY: help up down logs restart status test lint check install lock study demo smoke clean
 
 # Default target — show available targets
 help:
@@ -20,7 +20,6 @@ help:
 	@printf "  %-12s %s\n" "lock"    "Regenerate the lock file (uv lock)"
 	@printf "\n"
 	@printf "  %-12s %s\n" "study"   "Run the full load study"
-	@printf "  %-12s %s\n" "plots"   "Smoke-test the analysis pipeline with synthetic data"
 	@printf "\n"
 	@printf "  %-12s %s\n" "demo"    "Run 5 demo agent sessions"
 	@printf "  %-12s %s\n" "smoke"   "Hit /healthz and /v1/models to verify the stack is up"
@@ -70,10 +69,6 @@ lock:
 # Run the full load study
 study:
 	bash studies/run_load_study.sh
-
-# Verify the analysis pipeline with synthetic data
-plots:
-	python3 studies/analysis.py --synthetic
 
 # Spin up 5 demo agent sessions
 demo:
