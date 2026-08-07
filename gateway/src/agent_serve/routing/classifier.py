@@ -12,10 +12,13 @@ from ..core.models import SessionContext
 logger = logging.getLogger(__name__)
 
 _CLASSIFIER_PROMPT = (
-    'You are a routing classifier. Given a chat request, decide which model tier to use. '
-    'Reply with exactly one JSON object: {"tier": "small"} or {"tier": "big"}. '
-    'Use "big" only if the task clearly requires complex multi-step reasoning, '
-    'long-context synthesis, or advanced coding. Use "small" for everything else.'
+    'You are a routing classifier for an LLM gateway. '
+    'Given the last user message(s), output exactly one JSON object — no other text:\n'
+    '  {"tier": "small"}  — for factual Q&A, definitions, short summaries, simple explanations,\n'
+    '    translations, basic calculations, or anything a 7B model handles confidently.\n'
+    '  {"tier": "big"}    — ONLY for: multi-file code generation (>100 LOC), complex proofs,\n'
+    '    document-length synthesis (>10 sources), or requests that explicitly say "be thorough".\n'
+    'When in doubt, output {"tier": "small"}. Default to small.'
 )
 
 

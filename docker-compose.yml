@@ -87,7 +87,7 @@ services:
     env_file:
       - ./configs/vllm-small.env
     environment:
-      VLLM_ARGS: --max-model-len 16384 --enable-prefix-caching --gpu-memory-utilization 0.45 --max-num-seqs 128 --enable-auto-tool-choice --tool-call-parser hermes --port 8003 --host 0.0.0.0
+      VLLM_ARGS: --max-model-len 14000 --enable-prefix-caching --gpu-memory-utilization 0.43 --max-num-seqs 128 --enable-auto-tool-choice --tool-call-parser hermes --port 8003 --host 0.0.0.0
     entrypoint: ["/bin/sh", "-c"]
     command:
       - "vllm serve $$MODEL $$VLLM_ARGS"
