@@ -41,7 +41,10 @@ vllm serve Qwen/Qwen2.5-7B-Instruct \
 ```
 
 **small-1 (GPU 0, port 8003):**
-Same flags as small-0 with `--port 8003`. Two instances share GPU 0 at `gpu-memory-utilization 0.45` each; combined allocation is 86.4 GB, safely within the 96 GB budget.
+Same flags as small-0 except `--port 8003 --max-model-len 14000 --gpu-memory-utilization 0.43`.
+Reduced from 0.45 because both instances share GPU 0 and CUDA graph capture (during small-0 startup)
+temporarily holds additional memory, leaving small-1 with insufficient KV budget at 0.45/16384.
+At 0.43/14000, the combined allocation is (0.45+0.43)×96 = 84.5 GB, within the 96 GB budget.
 
 ## HuggingFace Commit Hashes (pin after first download)
 
