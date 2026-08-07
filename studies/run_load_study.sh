@@ -4,6 +4,7 @@
 # Output: studies/results/<run-id>/ with CSVs, manifest.json, and plots.
 
 set -euo pipefail
+cd "$(dirname "$0")/.."
 
 GATEWAY_URL=${GATEWAY_URL:-http://localhost:8000}
 RUN_ID=${RUN_ID:-$(date +%Y%m%d_%H%M%S)}

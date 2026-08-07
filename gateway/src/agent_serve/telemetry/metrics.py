@@ -8,7 +8,7 @@ metrics in other modules — that would produce duplicate-registration errors
 and split the data across registries.
 """
 
-from prometheus_client import Counter, Histogram, Gauge
+from prometheus_client import Counter, Gauge, Histogram
 
 # ---------------------------------------------------------------------------
 # Request-level counters and latency histograms

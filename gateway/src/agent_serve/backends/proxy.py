@@ -20,16 +20,15 @@ class BackendProxy:
         payload: dict,
         headers: dict,
     ) -> AsyncIterator[bytes]:
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            async with client.stream(
-                "POST",
-                f"{backend.base_url}{path}",
-                json=payload,
-                headers=headers,
-            ) as response:
-                response.raise_for_status()
-                async for chunk in response.aiter_bytes():
-                    yield chunk
+        async with httpx.AsyncClient(timeout=self._timeout) as client, client.stream(
+            "POST",
+            f"{backend.base_url}{path}",
+            json=payload,
+            headers=headers,
+        ) as response:
+            response.raise_for_status()
+            async for chunk in response.aiter_bytes():
+                yield chunk
 
     async def call(
         self,

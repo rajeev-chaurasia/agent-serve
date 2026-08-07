@@ -79,6 +79,8 @@ async def chat_completions(
             await admission.gate(session, decision.tier, estimated_tokens)
 
         payload = _strip_gateway_fields(body)
+        if backend.model:
+            payload["model"] = backend.model
         headers = {"Content-Type": "application/json"}
         meta = AgentServeMeta(
             tier=decision.tier,
@@ -98,7 +100,9 @@ async def chat_completions(
                 },
             )
         else:
-            return await _complete(session, backend, payload, headers, meta, proxy, admission, start)
+            return await _complete(
+                session, backend, payload, headers, meta, proxy, admission, start
+            )
 
     except GatewayException as exc:
         REQUESTS_TOTAL.labels(

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from .enums import BackendStatus, RoutingReason, Tier
 
@@ -9,6 +9,7 @@ class BackendInfo(BaseModel):
     base_url: str
     gpu: int
     max_inflight: int
+    model: str = ""
     status: BackendStatus = BackendStatus.HEALTHY
 
 

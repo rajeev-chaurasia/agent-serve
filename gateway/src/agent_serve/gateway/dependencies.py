@@ -1,12 +1,12 @@
 from fastapi import Depends
 
-from .lifespan import get_singletons
-from ..config.models import GatewayConfig
-from ..backends.protocols import BackendRegistryProtocol, BackendProxyProtocol
 from ..accounting.protocols import AccountantProtocol
 from ..admission.protocols import AdmissionControllerProtocol
-from ..routing.protocols import RouterProtocol
 from ..affinity.protocols import AffinitySchedulerProtocol
+from ..backends.protocols import BackendProxyProtocol, BackendRegistryProtocol
+from ..config.models import GatewayConfig
+from ..routing.protocols import RouterProtocol
+from .lifespan import get_singletons
 
 
 def _singletons() -> dict:

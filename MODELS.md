@@ -6,8 +6,8 @@ This file is the authoritative record of which model checkpoints are deployed, t
 
 | Tier  | Model                                     | HF Repo                                          | Quant | GPU | VRAM Budget          | Key vLLM Flags |
 |-------|-------------------------------------------|--------------------------------------------------|-------|-----|----------------------|----------------|
-| big   | Qwen2.5-72B-Instruct-FP8-dynamic          | RedHatAI/Qwen2.5-72B-Instruct-FP8-dynamic        | FP8   | 1   | ~72 GB weights+KV    | `--max-model-len 8192 --enable-prefix-caching --gpu-memory-utilization 0.90 --max-num-seqs 32 --enable-chunked-prefill` |
-| small | Qwen2.5-7B-Instruct (×2 on GPU 0)        | Qwen/Qwen2.5-7B-Instruct                        | BF16  | 0   | ~14 GB weights+KV    | `--max-model-len 16384 --enable-prefix-caching --gpu-memory-utilization 0.45 --max-num-seqs 128` |
+| big   | Qwen2.5-72B-Instruct-FP8-dynamic          | RedHatAI/Qwen2.5-72B-Instruct-FP8-dynamic        | FP8   | 1   | ~72 GB weights+KV    | `--max-model-len 8192 --enable-prefix-caching --gpu-memory-utilization 0.90 --max-num-seqs 32 --enable-chunked-prefill --enable-auto-tool-choice --tool-call-parser hermes` |
+| small | Qwen2.5-7B-Instruct (×2 on GPU 0)        | Qwen/Qwen2.5-7B-Instruct                        | BF16  | 0   | ~14 GB weights+KV    | `--max-model-len 16384 --enable-prefix-caching --gpu-memory-utilization 0.45 --max-num-seqs 128 --enable-auto-tool-choice --tool-call-parser hermes` |
 
 Using the same model family across both tiers (Qwen2.5) keeps tokenization identical, which matters for prompt-length routing thresholds and prefix-cache comparisons.
 
@@ -21,6 +21,8 @@ vllm serve RedHatAI/Qwen2.5-72B-Instruct-FP8-dynamic \
   --gpu-memory-utilization 0.90 \
   --max-num-seqs 32 \
   --enable-chunked-prefill \
+  --enable-auto-tool-choice \
+  --tool-call-parser hermes \
   --port 8001 \
   --host 0.0.0.0
 ```
@@ -32,6 +34,8 @@ vllm serve Qwen/Qwen2.5-7B-Instruct \
   --enable-prefix-caching \
   --gpu-memory-utilization 0.45 \
   --max-num-seqs 128 \
+  --enable-auto-tool-choice \
+  --tool-call-parser hermes \
   --port 8002 \
   --host 0.0.0.0
 ```
@@ -45,8 +49,8 @@ Record the exact commit hash for each model after the first successful download 
 
 | Model                                      | HF Commit Hash              | Recorded Date | Recorded By |
 |--------------------------------------------|-----------------------------|---------------|-------------|
-| RedHatAI/Qwen2.5-72B-Instruct-FP8-dynamic      | TBD — record after download | —             | —           |
-| Qwen/Qwen2.5-7B-Instruct                  | TBD — record after download | —             | —           |
+| RedHatAI/Qwen2.5-72B-Instruct-FP8-dynamic | 4d9910ef10cf92b072dad8ce7c2a2929fac4fe0f | 2026-08-07 | rchaurasia |
+| Qwen/Qwen2.5-7B-Instruct                  | a09a35458c702b33eeacc393d103063234e8bc28 | 2026-08-07 | rchaurasia |
 
 To record the commit hash after download:
 ```bash
@@ -96,16 +100,18 @@ File a GitHub issue against vllm-project/vllm for any SM120 FP8 failures and rec
 
 The vLLM image tag is `latest` during initial bring-up. Pin to a specific digest here after the first healthy boot.
 
-| Service      | Image                   | Tag / Digest | Pinned Date |
-|--------------|-------------------------|--------------|-------------|
-| vllm-big     | vllm/vllm-openai        | TBD          | —           |
-| vllm-small-0 | vllm/vllm-openai        | TBD          | —           |
-| vllm-small-1 | vllm/vllm-openai        | TBD          | —           |
+| Service      | Image            | Tag / Digest                                                              | Pinned Date |
+|--------------|------------------|---------------------------------------------------------------------------|-------------|
+| vllm-big     | vllm/vllm-openai | sha256:ffb2d59b1c059a5bd8d781320c9f5189de8293693b7d95da54befddaa54abf52   | 2026-08-07  |
+| vllm-small-0 | vllm/vllm-openai | sha256:ffb2d59b1c059a5bd8d781320c9f5189de8293693b7d95da54befddaa54abf52   | 2026-08-07  |
+| vllm-small-1 | vllm/vllm-openai | sha256:ffb2d59b1c059a5bd8d781320c9f5189de8293693b7d95da54befddaa54abf52   | 2026-08-07  |
 
-To pin the digest after first successful start:
+vLLM version: **0.26.0** (confirmed from container logs). All three services run the same image.
+
+To update the pinned digest after a vLLM upgrade:
 ```bash
 docker inspect vllm/vllm-openai:latest --format '{{.Id}}'
 ```
-Replace `latest` in `docker-compose.yml` with the digest and update the table above.
+Replace the digest in the table above and update `docker-compose.yml` accordingly.
 
 Any change to vLLM flags must be recorded in the table above with the date and reason.

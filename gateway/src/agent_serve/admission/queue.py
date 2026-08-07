@@ -26,7 +26,7 @@ class BackpressureQueue:
         self._queued = 0
 
     async def acquire(self) -> float:
-        """Acquire a slot. Returns wait time in seconds. Raises QueueFullException if queue is full."""
+        """Acquire a slot. Returns wait time in seconds. Raises QueueFullException if full."""
         if self._queued >= self._max_queue:
             raise QueueFullException(retry_after_seconds=int(self._timeout))
         self._queued += 1
@@ -34,8 +34,8 @@ class BackpressureQueue:
         start = time.monotonic()
         try:
             await asyncio.wait_for(self._semaphore.acquire(), timeout=self._timeout)
-        except asyncio.TimeoutError:
-            raise QueueFullException(retry_after_seconds=int(self._timeout))
+        except TimeoutError as exc:
+            raise QueueFullException(retry_after_seconds=int(self._timeout)) from exc
         finally:
             self._queued -= 1
             QUEUE_DEPTH.labels(tier=self._tier).dec()
