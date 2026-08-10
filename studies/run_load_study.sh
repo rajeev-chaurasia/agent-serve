@@ -30,7 +30,7 @@ curl -sf "${GATEWAY_URL}/healthz" | grep -q "ok" || { echo "Gateway not healthy.
 log "Gateway healthy."
 
 # Optional: lock GPU clocks before running for more stable measurements.
-# Uncomment and set the clock frequency for your 96 GB workstation GPU.
+# Uncomment and set the clock frequency for your GPU.
 # Requires sudo. Run once before the study, unlock after.
 # sudo nvidia-smi -lgc 2520 -i 0
 # sudo nvidia-smi -lgc 2520 -i 1

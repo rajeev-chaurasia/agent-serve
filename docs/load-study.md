@@ -1,6 +1,6 @@
 # Load Study
 
-This document covers the load study design, hardware setup, and full results for agent-serve running on dual 96 GB workstation GPU GPUs.
+This document covers the load study design, hardware setup, and full results for agent-serve running on dual 96 GB GPUs (SM120).
 
 ## Goals
 
@@ -15,8 +15,8 @@ The study was designed to answer four questions:
 
 | Component | Details |
 |-----------|---------|
-| GPU 0 | 96 GB workstation GPU, 96 GB GDDR7, SM120 |
-| GPU 1 | 96 GB workstation GPU, 96 GB GDDR7, SM120 |
+| GPU 0 | 96 GB GDDR7, SM120 |
+| GPU 1 | 96 GB GDDR7, SM120 |
 | vLLM | v0.26.0, image digest `sha256:ffb2d59b...` |
 | Big tier | Qwen2.5-72B-Instruct-FP8-dynamic on GPU 1, port 8001 |
 | Small tier | Qwen2.5-7B-Instruct x2 on GPU 0, ports 8002 and 8003 |

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This file tracks OSS issues and pull requests filed from the agent-serve project. The target is at least 2 quality bug reports or feature requests plus at least 1 merged PR, primarily targeting the vLLM project. File issues when you discover real problems during sm_120/sm_120 bring-up, benchmarking, or flag exploration.
+This file tracks OSS issues and pull requests filed from the agent-serve project. The target is at least 2 quality bug reports or feature requests plus at least 1 merged PR, primarily targeting the vLLM project. File issues when you discover real problems during sm_120 bring-up, benchmarking, or flag exploration.
 
 ## Contribution Log
 
@@ -13,7 +13,7 @@ This file tracks OSS issues and pull requests filed from the agent-serve project
 
 ## Contribution Targets
 
-### Priority 1 — sm_120 sm_120 Issues
+### Priority 1 — sm_120 Issues
 - FP8 GEMM kernel availability for compute capability 12.0
 - Any CUDA graph capture failures specific to sm_120
 - Prefix caching correctness under FP8 on sm_120
@@ -33,7 +33,7 @@ This file tracks OSS issues and pull requests filed from the agent-serve project
 ### Issue 1: CUDA_VISIBLE_DEVICES + Docker device_ids re-indexing trap
 
 **Repo:** vllm-project/vllm  
-**Labels:** `bug`, `documentation`, `hardware: sm_120`
+**Labels:** `bug`, `documentation`
 
 **Summary:**  
 When Docker Compose assigns a GPU via `device_ids: ["1"]`, Docker re-indexes that GPU as
@@ -58,7 +58,7 @@ CUDA_VISIBLE_DEVICES=1   # crashes; physical GPU 1 is already index 0 inside con
 ```
 **Fix:** Always set `CUDA_VISIBLE_DEVICES=0` when a single GPU is passed via `device_ids`.
 
-**Environment:** 96 GB workstation GPU (sm_120), CUDA 12.8, vLLM 0.26.0, Docker 27.x
+**Environment:** sm_120 GPU, CUDA 12.8, vLLM 0.26.0, Docker 27.x
 
 ---
 
@@ -86,7 +86,7 @@ vllm serve RedHatAI/Qwen2.5-72B-Instruct-FP8-dynamic
 **Suggestion:** Add a warning when `--quantization fp8` is combined with a model that already
 has a `quantization_config` in its `config.json`, or document this in the FP8 serving guide.
 
-**Environment:** 96 GB workstation GPU (sm_120), CUDA 12.8, vLLM 0.26.0
+**Environment:** sm_120 GPU, CUDA 12.8, vLLM 0.26.0
 
 ---
 
@@ -96,7 +96,7 @@ When filing an issue:
 1. Include GPU model, CUDA version, vLLM version, and Docker image digest
 2. Include full error traceback (from `docker compose logs <service>`)
 3. Include a minimal reproduction command
-4. Label appropriately (`bug`, `hardware: sm_120`, `quantization: fp8`)
+4. Label appropriately (`bug`, `quantization: fp8`)
 5. Record the link in the table above and update status as it progresses
 
 Status values: `Not filed` | `Open` | `In Review` | `Merged` | `Closed (won't fix)` | `Closed (duplicate)`

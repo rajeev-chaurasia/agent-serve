@@ -1,7 +1,7 @@
 # Load Study Findings
 
 **Date:** 2026-08-07  
-**Hardware:** 2x 96 GB workstation GPU (SM120, 96 GB GDDR7 each)
+**Hardware:** 2x 96 GB GPUs (SM120, GDDR7)
 
 ## Hardware and Setup
 

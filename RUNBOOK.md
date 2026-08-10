@@ -112,11 +112,11 @@ docker compose logs -f gateway | tail -50
 3. If queue is full (check `queue_depth` metric in Grafana), reduce incoming traffic or increase `max_queue_size` in `configs/gateway.yaml`
 4. Check `configs/gateway.yaml` has correct `base_url` values (Docker service names, not localhost)
 
-### 2.4 FP8 on sm_120 (sm_120) Issues
+### 2.4 FP8 on sm_120 Issues
 
 **Symptom**: `vllm-big` fails to start with errors referencing `sm_120`, `compute capability`, or `No kernel found for fp8`.
 
-**Background**: 96 GB workstation GPU uses CUDA compute capability 12.0 (sm_120). FP8 GEMM kernels in early vLLM releases may not include sm_120 PTX. This is a known gap as of early 2026.
+**Background**: The deployment GPUs use CUDA compute capability 12.0 (sm_120). FP8 GEMM kernels in early vLLM releases may not include sm_120 PTX. This is a known gap as of early 2026.
 
 **Immediate remediation**:
 1. Check if a newer vLLM image has sm_120 FP8 support: https://github.com/vllm-project/vllm/releases
@@ -124,7 +124,7 @@ docker compose logs -f gateway | tail -50
 3. See `MODELS.md` for the full fallback sequence
 
 **Required action**: File an issue at https://github.com/vllm-project/vllm/issues with:
-- GPU: 96 GB workstation GPU
+- GPU: sm_120, 96 GB
 - CUDA compute capability: sm_120
 - vLLM version (from docker image tag)
 - Full error traceback from `docker compose logs vllm-big`

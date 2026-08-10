@@ -1,6 +1,6 @@
 # agent-serve
 
-A self-hosted LLM serving gateway for agentic traffic, running on dual 96 GB workstation GPU GPUs (96 GB GDDR7 each). It wraps three vLLM backends behind a single OpenAI-compatible endpoint and handles everything the gateway layer needs to: session pinning for KV-cache reuse, two-tier routing (7B for fast tasks, 72B for complex ones), per-agent token budgets, and backpressure queuing. A pre-wired Grafana dashboard ships out of the box.
+A self-hosted LLM serving gateway for agentic traffic, running on dual 96 GB GPUs. It wraps three vLLM backends behind a single OpenAI-compatible endpoint and handles everything the gateway layer needs to: session pinning for KV-cache reuse, two-tier routing (7B for fast tasks, 72B for complex ones), per-agent token budgets, and backpressure queuing. A pre-wired Grafana dashboard ships out of the box.
 
 ## Architecture
 
@@ -85,7 +85,7 @@ The 83.3% hit rate is the theoretical exact value for 6-turn sessions (turn 1 = 
 ### Prerequisites
 
 - Docker Engine with Docker Compose v2 (`docker compose`, not `docker-compose`)
-- 2x 96 GB workstation GPU GPUs (96 GB each) with NVIDIA Container Toolkit installed
+- 2x NVIDIA GPUs (96 GB each) with NVIDIA Container Toolkit installed
 - A Hugging Face token with access to the model repos
 - About 200 GB free disk space for model weights
 

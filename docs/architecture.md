@@ -1,6 +1,6 @@
 # Architecture
 
-agent-serve is a self-hosted LLM serving gateway for agentic traffic. It runs on bare metal with two 96 GB workstation GPU GPUs (96 GB GDDR7 each) and wraps three vLLM inference backends behind a single OpenAI-compatible HTTP endpoint.
+agent-serve is a self-hosted LLM serving gateway for agentic traffic. It runs on bare metal with two 96 GB NVIDIA GPUs and wraps three vLLM inference backends behind a single OpenAI-compatible HTTP endpoint.
 
 ## System Overview
 

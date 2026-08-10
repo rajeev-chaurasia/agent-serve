@@ -67,7 +67,7 @@ Paste the SHAs into the table above and commit this file.
 
 ## VRAM Budget
 
-Both 96 GB workstation GPU GPUs (SM120) have 96 GB GDDR7 VRAM each.
+Both GPUs (SM120) have 96 GB GDDR7 VRAM each.
 
 | GPU | Usage                                       | Allocation  | Notes |
 |-----|---------------------------------------------|-------------|-------|
